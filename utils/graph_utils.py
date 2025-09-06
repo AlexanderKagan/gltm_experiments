@@ -2,6 +2,8 @@ import numpy as np
 import networkx as nx
 from typing import List, Tuple
 from InfluenceDiffusion.Graph import Graph
+from InfluenceDiffusion.Trace import Trace
+import matplotlib.pyplot as plt
 
 
 def adjacency_matrix_2_dict(adjacency_matrix, vertex_names=None):
@@ -54,6 +56,36 @@ def plot_graph(graph: Graph, plot_weights=True):
         edge_labels = {(vertex_2_index[v1], vertex_2_index[v2]): edge_index
                        for edge_index, (v1, v2) in enumerate(graph.edge_array)}
         nx.draw_networkx_edge_labels(nx_graph, pos, edge_labels=edge_labels, font_color='red')
+        
+
+def plot_trace_subgraph(G, trace: Trace):
+
+    trace_nodes = trace.get_all_activated_vertices()
+    trace_G = G.subgraph(trace_nodes).copy()
+
+    # Assign colors and labels
+    colors = plt.cm.tab10.colors  # up to 10 distinguishable colors
+    node_color_dict = {}
+    node_label_dict = {}
+
+    for i, new_active_nodes in enumerate(trace):
+        
+        color = colors[i % len(colors)]
+        for node in new_active_nodes:
+            node_color_dict[node] = color
+            node_label_dict[node] = str(i)
+    
+    node_colors = [node_color_dict[node] for node in trace_G.nodes]
+    # Compute layout for subgraph
+    pos = nx.spring_layout(trace_G, seed=42)
+
+    # Draw nodes, edges, and labels
+    nx.draw_networkx_edges(trace_G, pos, arrows=True, alpha=0.3)
+    nx.draw_networkx_nodes(trace_G, pos, node_color=node_colors, node_size=200)
+    nx.draw_networkx_labels(trace_G, pos, labels=node_label_dict, font_color="white")
+
+    plt.axis("off")
+    plt.show()
 
 
 def construct_edge_groups(edge_list: list,

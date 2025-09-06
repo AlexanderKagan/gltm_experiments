@@ -34,6 +34,16 @@ def construct_pseudo_traces(action_df: pd.DataFrame, graph: Graph):
     return pseudo_traces 
 
 
+def construct_action_df_from_traces(traces):
+    action_df = pd.DataFrame(columns=["action", "user", "time"])
+    for trace_idx, trace in enumerate(traces):
+        for t, Dt in enumerate(trace):
+            for user in Dt:
+                action_df = action_df.append({"action": trace_idx, "user": user, "time": t}, 
+                                             ignore_index=True)
+    return action_df
+
+
 def pseudo_trace_train_test_split(pseudo_traces: dict[int, list[tuple[set, set]]], 
                                   test_prop: float = 0.2, random_state=None):
     train_pseudo_traces = {}

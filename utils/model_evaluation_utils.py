@@ -1,19 +1,17 @@
 import numpy as np
 import matplotlib.pyplot as plt
-
-from typing import List
 from time import time
 from tqdm import tqdm
-from sklearn.metrics import roc_curve, precision_recall_curve, roc_curve, auc
-from .utils import RMAE, assign_to_bins
+from sklearn.metrics import precision_recall_curve, roc_curve, auc
+from utils.utils import RMAE, assign_to_bins
 import pandas as pd
 import seaborn as sns
 
 
 def compare_metric_over_bins(true_spread: np.array, pred_spreads,
                              metric, pred_names, bins=10, markersize=15, 
-                             colors=[ "b", "r", "g", "orange", "violet", "brown"],
-                             markers = ["X",  "d", "p","s", "2", "+"]):
+                             colors=["b", "r", "g", "orange", "violet", "brown"],
+                             markers=["X",  "d", "p","s", "2", "+"]):
     
 
     pred_spread_array = np.array(pred_spreads)
@@ -52,7 +50,6 @@ def compare_metric_over_bins(true_spread: np.array, pred_spreads,
     axs[1].set_ylabel("MAE", fontsize=15)
     
     axs[1].legend(fontsize=17)
-    plt.title(save_name)
     plt.show()
     
 
@@ -179,7 +176,7 @@ def plot_estimator_output_vs_variable(variable_2_estimators_outputs,
                      label=model_name, c=color, marker=marker, markersize=5, linestyle=linestyle)
         else:
             plt.errorbar(variable_range, output_means, yerr= n_std * output_stds, capsize=5, 
-                     label=model_name, c=color, marker=marker, markersize=5, linestyle=linestyle)
+                         label=model_name, c=color, marker=marker, markersize=5, linestyle=linestyle)
 
     # plt.title(f"Estimator work time vs {variable_name}", fontsize=14)
     plt.xlabel(xlabel, fontsize=fontsize)

@@ -1,6 +1,7 @@
 import numpy as np
 from typing import Iterable, Set, List
 import matplotlib.pyplot as plt
+import scipy
 
 
 def make_set_intersection_table(seeds, names):
@@ -46,12 +47,23 @@ def make_distrib_dict(com_sizes: list, distribs: list):
     return distrib_dict
 
 
-def plot_distribution(distrib, n_points=100, ub=5, lb=-5):
+def make_distrib_name(distrib: scipy.stats._distn_infrastructure.rv_frozen):
+    name = distrib.dist.name.capitalize()
+    args = distrib.args
+    args_str = ', '.join(map(str, args))
+    if not args and name == "Expon":
+        return 'Exponential(1)'
+    if args == (1, 1) and name == "Beta":
+        return 'Unif[0, 1]'
+    return f'{name}({args_str})'
+
+
+def plot_distribution(distrib, n_points=100, ub=5, lb=-5, plot_pdf=True):
     sup_min, sup_max = distrib.support()
     xs = np.linspace(max(sup_min, lb), min(sup_max, ub), n_points)
-    plt.plot(xs, distrib.pdf(xs))
+    plt.plot(xs, distrib.pdf(xs) if plot_pdf else distrib.cdf(xs))
     plt.xlabel("x", fontsize=10)
-    plt.ylabel("PDF",  fontsize=10)
+    plt.ylabel("PDF" if plot_pdf else "CDF",  fontsize=10)
 
 
 def multiple_union(set_list: Iterable[Set]):
@@ -102,3 +114,14 @@ def random_vector_on_simplex(dim, ub=1):
 
 def RMAE(true, pred):
     return np.linalg.norm(true - pred, ord=1) / np.linalg.norm(true, ord=1)
+
+
+def make_distrib_name(distrib: scipy.stats._distn_infrastructure.rv_frozen):
+    name = distrib.dist.name.capitalize()
+    args = distrib.args
+    args_str = ', '.join(map(str, args))
+    if not args and name == "Expon":
+        return 'Exponential(1)'
+    if args == (1, 1) and name == "Beta":
+        return 'Unif[0, 1]'
+    return f'{name}({args_str})'
