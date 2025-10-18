@@ -68,7 +68,6 @@ def make_heatmap(values, xy_pairs, x_name="a", y_name="b", title=None):
     plt.ylabel(y_name, fontsize=15)
     if title is not None:
         plt.title(title,  fontsize=15)
-    plt.show()
 
 
 def run_experiment(g, influence_model, estimating_models_dict, error_metric=RMAE,
